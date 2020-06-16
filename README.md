@@ -5,7 +5,7 @@ The whole idea of this is two-fold:
 1. Port the existing [`%TypedArray%.prototype.set`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/set) to arrays, so they can reap its benefits, too.
 2. Expand both to align with the existing `copyWithin` method present on both [arrays](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/copyWithin) and [typed arrays](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/copyWithin) and accept the same list of parameters.
 
-In effect, this makes `array.copyWithin(...args)` on both sugar for `array.set(array, ...args)`, and engines could just delegate the first to the second internally. It would also simplify the spec, as they could share an implementation within it.
+In effect, this makes `array.copyWithin(...args)` on both very similar to `array.set(array, ...args)`, and engines could just delegate the first to the second internally after processing the parameters. It would also simplify the spec, as they could share an implementation within it.
 
 ## Array.prototype.set(*array* [ , *offset* [ , *start* [ , *end* ] ] ])
 
@@ -13,11 +13,11 @@ This assigns to `this`, starting at `offset`, the items in `array` from `start` 
 
 The defaults for each of these are as follows:
 
-- *offset*: `0`
+- *offset*: `0` (same as with `%TypedArray%.prototype.set` today)
 - *start*: `0`
 - *end*: `target.length`
 
-Implementation-wise, it'd work just like `copyWithin`, just it would read from *array* rather than **`this`**.
+Implementation-wise, it'd work just like `copyWithin`, just it would read from *array* rather than **`this`**. For consistency with the existing `%TypedArray%.prototype.set`, it'd throw a **RangeError** if any of its parameters are negative or if *start* > *end*.
 
 ### Why?
 
@@ -35,7 +35,7 @@ For `Array.prototype.set`, consider the surprisingly frequent usage of [`System.
 
 ## %TypedArray%.prototype.set(*overloaded* [ , *offset* [ , *start* [ , *end* ] ] ])
 
-Update the offset handling to work similarly to above and `copyWithin`. Note that `typedArray.set(overloaded, offset = 0)` would remain identical to what's currently in the spec, so the risk of breakage I suspect would be rather low.
+Update the offset handling to work similarly to above. Note that `typedArray.set(overloaded, offset = 0)` would remain identical to what's currently in the spec, so the risk of breakage I suspect would be very low.
 
 ### Why?
 
