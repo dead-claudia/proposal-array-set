@@ -1,3 +1,5 @@
+*Actively seeking a champion for this proposal. If you're a TC39 member, please feel free to reach out - I'd deeply appreciate it.*
+
 # Proposal: batch array copying
 
 The whole idea of this is two-fold:
